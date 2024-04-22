@@ -70,9 +70,12 @@ public class Person
                 try
                 {
                     person.validateLifespan();
+                    person.validateAmbiguity(people);
                     people.add(person);
 
                 } catch (NegativeLifespanException e) {
+                    System.err.println(e.getMessage());
+                } catch (AmbiguousPersonException e) {
                     System.err.println(e.getMessage());
                 }
 
@@ -94,6 +97,17 @@ public class Person
         if(deathDate != null && deathDate.isBefore(birthDate))
         {
             throw new NegativeLifespanException(this);
+        }
+    }
+
+    private void validateAmbiguity(List<Person> people) throws AmbiguousPersonException
+    {
+        for(Person p : people)
+        {
+            if(this.getName().equals(p.getName()))
+            {
+                throw new AmbiguousPersonException(this);
+            }
         }
     }
 }
