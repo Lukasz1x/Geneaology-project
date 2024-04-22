@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Person
 {
@@ -55,10 +57,16 @@ public class Person
                 '}';
     }
 
+    public void addParent(Person parent)
+    {
+        parents.add(parent);
+    }
+
     public static List<Person> fromCsv(String path)
     {
         BufferedReader reader = null;
         List<Person> people = new ArrayList<>();
+        Map<String, PersonWithParentsNames> map = new HashMap<>();
         String line;
         try {
             reader = new BufferedReader(new FileReader(path));
@@ -66,12 +74,16 @@ public class Person
 
             while ((line=reader.readLine())!=null)
             {
-                Person person=fromCsvLine(line);
+                //Person person=fromCsvLine(line);
+                PersonWithParentsNames pwpn= PersonWithParentsNames.fromCsvLine(line);
+                Person person= pwpn.person;
                 try
                 {
                     person.validateLifespan();
                     person.validateAmbiguity(people);
+
                     people.add(person);
+                    map.put(person.getName(), pwpn);
 
                 } catch (NegativeLifespanException e) {
                     System.err.println(e.getMessage());
@@ -88,7 +100,7 @@ public class Person
             e.printStackTrace();
         }
 
-
+        PersonWithParentsNames.linkRelatives(map);
         return people;
     }
 
