@@ -1,4 +1,6 @@
-import javax.swing.text.DateFormatter;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -27,6 +29,22 @@ public class Person
         return new Person(parts[0], birthDate, deathDate);
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public LocalDate getDeathDate() {
+        return deathDate;
+    }
+
+    public List<Person> getParents() {
+        return parents;
+    }
+
     @Override
     public String toString() {
         return "Person{" +
@@ -35,5 +53,47 @@ public class Person
                 ", deathDate=" + deathDate +
                 ", parents=" + parents +
                 '}';
+    }
+
+    public static List<Person> fromCsv(String path)
+    {
+        BufferedReader reader = null;
+        List<Person> people = new ArrayList<>();
+        String line;
+        try {
+            reader = new BufferedReader(new FileReader(path));
+            reader.readLine();
+
+            while ((line=reader.readLine())!=null)
+            {
+                Person person=fromCsvLine(line);
+                try
+                {
+                    person.validateLifespan();
+                    people.add(person);
+
+                } catch (NegativeLifespanException e) {
+                    System.err.println(e.getMessage());
+                }
+
+
+            }
+
+
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        return people;
+    }
+
+    private void validateLifespan() throws NegativeLifespanException
+    {
+        if(deathDate != null && deathDate.isBefore(birthDate))
+        {
+            throw new NegativeLifespanException(this);
+        }
     }
 }
