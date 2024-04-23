@@ -1,5 +1,6 @@
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class Main {
     public static void main(String[] args) {
@@ -37,9 +38,14 @@ public class Main {
 
         Function<String, String> change_color = s -> s.contains("Kowals") ? s +" #Yellow" : s ;
 
-        String uml = Person.generateUML(people, change_color);
+//        String uml = Person.generateUML(people, change_color);
+//        PlantUMLRunner.setPlantUmlPath("plantuml-1.2024.4.jar");
+//        PlantUMLRunner.generateDiagram(uml, "./", "UmlDiagram");
+
+        List<Person>personList = Person.sortByLifespan(people);
+        Predicate<Person> condition = person -> personList.contains(person);
+        String uml = Person.generateUML(people, change_color, condition);
         PlantUMLRunner.setPlantUmlPath("plantuml-1.2024.4.jar");
         PlantUMLRunner.generateDiagram(uml, "./", "UmlDiagram");
-
     }
 }

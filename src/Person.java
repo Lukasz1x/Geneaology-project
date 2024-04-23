@@ -4,6 +4,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Person implements Serializable
@@ -189,6 +190,7 @@ public class Person implements Serializable
         return sb.toString();
     }
 
+    //zad8
     public static String generateUML(List<Person>people, Function<String, String>postProcess)
     {
         StringBuilder sb=new StringBuilder();
@@ -201,6 +203,29 @@ public class Person implements Serializable
                 .collect(Collectors.joining()));
         sb.append(people
                 .stream()
+                .flatMap(person -> person.parents.isEmpty() ? null :
+                        person.parents
+                                .stream()
+                                .map(parent -> "\n" + deleteSpaces.apply(parent) + " <-- " + deleteSpaces.apply(person)))
+                .collect(Collectors.joining()));
+        sb.append("\n@enduml");
+        return sb.toString();
+    }
+
+    public static String generateUML(List<Person>people, Function<String, String>postProcess, Predicate<Person>condition)
+    {
+        StringBuilder sb=new StringBuilder();
+        sb.append("@startuml");
+        Function<Person, String> deleteSpaces = p -> p.getName().replaceAll(" ", "");
+        Function<Person, String> addObject = p-> "\nobject "+deleteSpaces.apply(p);
+        sb.append(people
+                .stream()
+                .filter(condition)
+                .map(person -> postProcess.apply(addObject.apply(person)))
+                .collect(Collectors.joining()));
+        sb.append(people
+                .stream()
+                .filter(condition)
                 .flatMap(person -> person.parents.isEmpty() ? null :
                         person.parents
                                 .stream()
