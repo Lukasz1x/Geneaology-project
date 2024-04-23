@@ -1,11 +1,9 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class Person
+public class Person implements Serializable
 {
     private String name;
     private LocalDate birthDate;
@@ -147,6 +145,33 @@ public class Person
         }
     }
 
+
+
+    public static void toBinaryFile(List<Person> people, String filename)
+    {
+        try
+        {
+            FileOutputStream fos = new FileOutputStream(filename);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(people);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static List<Person> fromBinaryFile(String filename)
+    {
+        try
+        {
+            FileInputStream fis = new FileInputStream(filename);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            return (List<Person>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 
 }
