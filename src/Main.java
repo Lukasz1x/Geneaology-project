@@ -15,9 +15,14 @@ public class Main {
 //        {
 //            System.out.printf(person.toString()+"\n");
 //        }
-        List<Person> kowalscy = Person.filterByName(people, "Kowals");
-        String uml = Person.generateUML(kowalscy);
-        PlantUMLRunner.setPlantUmlPath("plantuml-1.2024.4.jar");
-        PlantUMLRunner.generateDiagram(uml, "./", "UmlDiagram");
+//        List<Person> kowalscy = Person.filterByName(people, "Kowals");
+//        String uml = Person.generateUML(kowalscy);
+//        PlantUMLRunner.setPlantUmlPath("plantuml-1.2024.4.jar");
+//        PlantUMLRunner.generateDiagram(uml, "./", "UmlDiagram");
+        List<Person> sortedBirthdate = Person.sortByBirthdate(people);
+        for(Person person: sortedBirthdate)
+        {
+            System.out.printf(person.toString()+"\n");
+        }
     }
 }

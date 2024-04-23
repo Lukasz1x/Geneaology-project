@@ -196,6 +196,14 @@ public class Person implements Serializable
                 .collect(Collectors.toList());
     }
 
+    public static List<Person> sortByBirthdate(List<Person>people)
+    {
+        return people
+                .stream()
+                .sorted(Comparator.comparing(Person::getBirthDate))
+                .collect(Collectors.toList());
+    }
+
     public static void toBinaryFile(List<Person> people, String filename)
     {
         try
