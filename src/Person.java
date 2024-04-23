@@ -3,10 +3,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Person
 {
@@ -101,6 +98,22 @@ public class Person
         }
 
         PersonWithParentsNames.linkRelatives(map);
+        try
+        {
+            for(Person p : people)
+            {
+                p.validateParenting();
+            }
+        } catch (ParentingAgeException e) {
+            System.err.println(e.getMessage());
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Dodac osobe? Potwierdz za pomoca [Y/N]");
+            String odp = scanner.nextLine();
+            if(!odp.toLowerCase(Locale.ENGLISH).equals("y"))
+            {
+                people.remove(e.person);
+            }
+        }
         return people;
     }
 
@@ -122,4 +135,18 @@ public class Person
             }
         }
     }
+
+    private void validateParenting() throws ParentingAgeException
+    {
+        for (Person parent : this.parents)
+        {
+            if(parent.birthDate.plusYears(15).isAfter(this.birthDate) || (parent.deathDate != null && parent.deathDate.isBefore(this.birthDate)))
+            {
+                throw new ParentingAgeException(this, parent);
+            }
+        }
+    }
+
+
+
 }
