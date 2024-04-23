@@ -169,7 +169,23 @@ public class Person implements Serializable
 
     public static String generateUML(List<Person>people)
     {
-        return null;
+        StringBuilder sb=new StringBuilder();
+        sb.append("@startuml\n");
+        Function<Person, String> deleteSpaces = p -> p.getName().replaceAll(" ", "");
+        Function<Person, String> addObject = p-> "object "+deleteSpaces.apply(p)+ "\n";
+        sb.append(people
+                .stream()
+                .map(person -> addObject.apply(person))
+                .collect(Collectors.joining()));
+        sb.append(people
+                .stream()
+                .flatMap(person -> person.parents.isEmpty() ? null :
+                        person.parents
+                                .stream()
+                                .map(parent -> deleteSpaces.apply(parent) + " <-- " + deleteSpaces.apply(person) +"\n"))
+                .collect(Collectors.joining()));
+        sb.append("@enduml");
+        return sb.toString();
     }
 
     public static void toBinaryFile(List<Person> people, String filename)
