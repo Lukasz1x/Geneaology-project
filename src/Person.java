@@ -1,6 +1,7 @@
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -201,6 +202,20 @@ public class Person implements Serializable
         return people
                 .stream()
                 .sorted(Comparator.comparing(Person::getBirthDate))
+                .collect(Collectors.toList());
+    }
+
+    public double getLifespan()
+    {
+        return birthDate.until(deathDate, ChronoUnit.DAYS);
+    }
+
+    public static List<Person> sortByLifespan(List<Person>people)
+    {
+        return people
+                .stream()
+                .filter(person -> person.getDeathDate() != null)
+                .sorted(Comparator.comparing(Person::getLifespan))
                 .collect(Collectors.toList());
     }
 

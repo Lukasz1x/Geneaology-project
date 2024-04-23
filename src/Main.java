@@ -19,10 +19,17 @@ public class Main {
 //        String uml = Person.generateUML(kowalscy);
 //        PlantUMLRunner.setPlantUmlPath("plantuml-1.2024.4.jar");
 //        PlantUMLRunner.generateDiagram(uml, "./", "UmlDiagram");
-        List<Person> sortedBirthdate = Person.sortByBirthdate(people);
-        for(Person person: sortedBirthdate)
+
+//        List<Person> sortedBirthdate = Person.sortByBirthdate(people);
+//        for(Person person: sortedBirthdate)
+//        {
+//            System.out.printf(person.toString()+"\n");
+//        }
+
+        List<Person> sortedByLifespan = Person.sortByLifespan(people);
+        for(Person person: sortedByLifespan)
         {
-            System.out.printf(person.toString()+"\n");
+            System.out.printf(person.getLifespan()+ " "+ person.toString()+"\n");
         }
     }
 }
