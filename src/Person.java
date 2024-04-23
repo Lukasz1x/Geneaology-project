@@ -189,6 +189,27 @@ public class Person implements Serializable
         return sb.toString();
     }
 
+    public static String generateUML(List<Person>people, Function<String, String>postProcess)
+    {
+        StringBuilder sb=new StringBuilder();
+        sb.append("@startuml");
+        Function<Person, String> deleteSpaces = p -> p.getName().replaceAll(" ", "");
+        Function<Person, String> addObject = p-> "\nobject "+deleteSpaces.apply(p);
+        sb.append(people
+                .stream()
+                .map(person -> postProcess.apply(addObject.apply(person)))
+                .collect(Collectors.joining()));
+        sb.append(people
+                .stream()
+                .flatMap(person -> person.parents.isEmpty() ? null :
+                        person.parents
+                                .stream()
+                                .map(parent -> "\n" + deleteSpaces.apply(parent) + " <-- " + deleteSpaces.apply(person)))
+                .collect(Collectors.joining()));
+        sb.append("\n@enduml");
+        return sb.toString();
+    }
+
     public static List<Person> filterByName(List<Person> people, String substring)
     {
         return people
@@ -217,6 +238,15 @@ public class Person implements Serializable
                 .filter(person -> person.getDeathDate() != null)
                 .sorted(Comparator.comparing(Person::getLifespan))
                 .collect(Collectors.toList());
+    }
+
+    public static Person oldestLivingPerson(List<Person>people)
+    {
+        return people
+                .stream()
+                .filter(person -> person.getDeathDate() == null)
+                .min(Comparator.comparing(person -> person.birthDate))
+                .orElse(null);
     }
 
     public static void toBinaryFile(List<Person> people, String filename)

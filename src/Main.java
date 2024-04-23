@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.function.Function;
 
 public class Main {
     public static void main(String[] args) {
@@ -26,10 +27,19 @@ public class Main {
 //            System.out.printf(person.toString()+"\n");
 //        }
 
-        List<Person> sortedByLifespan = Person.sortByLifespan(people);
-        for(Person person: sortedByLifespan)
-        {
-            System.out.printf(person.getLifespan()+ " "+ person.toString()+"\n");
-        }
+//        List<Person> sortedByLifespan = Person.sortByLifespan(people);
+//        for(Person person: sortedByLifespan)
+//        {
+//            System.out.printf(person.getLifespan()+ " "+ person.toString()+"\n");
+//        }
+
+//        System.out.println(Person.oldestLivingPerson(people));
+
+        Function<String, String> change_color = s -> s.contains("Kowals") ? s +" #Yellow" : s ;
+
+        String uml = Person.generateUML(people, change_color);
+        PlantUMLRunner.setPlantUmlPath("plantuml-1.2024.4.jar");
+        PlantUMLRunner.generateDiagram(uml, "./", "UmlDiagram");
+
     }
 }
