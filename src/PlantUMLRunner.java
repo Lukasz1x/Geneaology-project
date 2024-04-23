@@ -6,7 +6,7 @@ public class PlantUMLRunner
 {
     private static String plantUmlPath;
 
-    public void setPlantUmlPath(String path)
+    public static void setPlantUmlPath(String path)
     {
         plantUmlPath=path;
     }
@@ -18,6 +18,7 @@ public class PlantUMLRunner
         {
             FileWriter fw = new FileWriter(outputFile);
             fw.write(umlData);
+            fw.close();
             String command= "java -jar "+plantUmlPath +" -charset UTF-8 " +outputFile.getPath()
                     + " -o "+ filePath + " " + outputFileName;
             Process process = Runtime.getRuntime().exec(command);

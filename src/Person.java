@@ -2,6 +2,8 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Person implements Serializable
 {
@@ -9,6 +11,8 @@ public class Person implements Serializable
     private LocalDate birthDate;
     private LocalDate deathDate;
     private List<Person> parents=new ArrayList<>();
+
+
 
 
     public Person(String name, LocalDate birthDate, LocalDate deathDate)
@@ -146,7 +150,27 @@ public class Person implements Serializable
     }
 
 
+    public String generateUML()
+    {
+        StringBuilder sb=new StringBuilder();
+        sb.append("@startuml\n");
+        Function<Person, String> deleteSpaces = p -> p.getName().replaceAll(" ", "");
+        Function<Person, String> addObject = p-> "object "+deleteSpaces.apply(p)+ "\n";
+        sb.append(addObject.apply(this));
+        if(!this.parents.isEmpty())
+        {
+            sb.append(this.parents.stream()
+                    .map(person  -> addObject.apply(person) + deleteSpaces.apply(person) +" <-- "+ deleteSpaces.apply(this) +"\n")
+                    .collect(Collectors.joining()));
+        }
+        sb.append("@enduml");
+        return sb.toString();
+    }
 
+    public static String generateUML(List<Person>people)
+    {
+        return null;
+    }
 
     public static void toBinaryFile(List<Person> people, String filename)
     {
