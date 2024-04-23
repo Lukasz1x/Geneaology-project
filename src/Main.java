@@ -15,7 +15,8 @@ public class Main {
 //        {
 //            System.out.printf(person.toString()+"\n");
 //        }
-        String uml = Person.generateUML(people);
+        List<Person> kowalscy = Person.filterByName(people, "Kowals");
+        String uml = Person.generateUML(kowalscy);
         PlantUMLRunner.setPlantUmlPath("plantuml-1.2024.4.jar");
         PlantUMLRunner.generateDiagram(uml, "./", "UmlDiagram");
     }
